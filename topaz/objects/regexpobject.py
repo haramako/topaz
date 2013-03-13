@@ -181,7 +181,8 @@ class W_RegexpObject(W_Object):
                 flags += c
             else:
                 missing_flags += c
-        return space.newstr_fromstr("(?%s-%s:%s)" % (flags, missing_flags, self.source))
+        # return space.newstr_fromstr("(?%s-%s:%s)" % (flags, missing_flags, self.source))
+        return space.newstr_fromstr("%s" % (self.source))
 
     @classdef.method("==")
     def method_equal(self, space, w_other):

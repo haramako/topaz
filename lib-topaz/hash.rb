@@ -69,4 +69,47 @@ class Hash
     end
     nil
   end
+
+  def self.[](*args)
+    if args.size == 1
+      obj = args.first
+
+      if hash = Topaz::Type.convert_type(obj, Hash, :to_hash, false)
+        return allocate.replace(hash)
+      elsif array = Topaz::Type.convert_type(obj, Array, :to_ary, false)
+        h = new
+        array.each do |arr|
+          next unless arr.respond_to?(:to_ary)
+          arr = arr.to_ary
+          next unless (1..2).include?(arr.size)
+          h[arr.at(0)] = arr.at(1)
+        end
+        return h
+      end
+    end
+
+    return new if args.empty?
+
+    if args.size.odd?
+      raise ArgumentError, "Expected an even number, got #{args.length}"
+    end
+
+    hash = new
+    i = 0
+    total = args.size
+
+    while i < total
+      hash[args[i]] = args[i+1]
+      i += 2
+    end
+
+    hash
+  end
+
+  def update(other_hash)
+    other_hash.each do |k,v|
+      self[k] = v
+    end
+    self
+  end
 end

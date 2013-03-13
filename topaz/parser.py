@@ -2283,6 +2283,7 @@ class Parser(object):
                 "i": regexp.IGNORE_CASE,
                 "o": regexp.ONCE,
                 "x": regexp.EXTENDED,
+                "n": 0,
             }[f]
         if p[1] is not None:
             n = p[1].getast()

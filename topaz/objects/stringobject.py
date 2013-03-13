@@ -828,6 +828,13 @@ class W_StringObject(W_Object):
     def method_gsub(self, space, w_pattern, w_replacement=None, block=None):
         return self.gsub_main(space, w_pattern, w_replacement, block, first_only=False)
 
+    @classdef.method("gsub!")
+    def method_gsub_i(self, space, w_pattern, w_replacement=None, block=None):
+        w_str = self.gsub_main(space, w_pattern, w_replacement, block, first_only=False)
+        self.str_storage = w_str.str_storage
+        self.strategy = w_str.strategy
+        return self
+    
     @classdef.method("sub")
     def method_sub(self, space, w_pattern, w_replacement=None, block=None):
         return self.gsub_main(space, w_pattern, w_replacement, block, first_only=True)

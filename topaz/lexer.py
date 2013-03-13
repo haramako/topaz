@@ -1335,7 +1335,7 @@ class StringTerm(BaseStringTerm):
                 if ch == self.lexer.EOF or not ch.isalpha():
                     self.lexer.unread()
                     break
-                elif ch in "ixmo":
+                elif ch in "ixmon":
                     if ch not in flags:
                         flags += ch
                         self.lexer.add(ch)

@@ -3,7 +3,9 @@ import copy
 from topaz.module import ClassDef
 from topaz.objects.moduleobject import W_ModuleObject
 from topaz.objects.objectobject import W_Object
+from pprint import PrettyPrinter
 
+pp = PrettyPrinter(indent=2)
 
 class W_ClassObject(W_ModuleObject):
     _immutable_fields_ = ["superclass"]
@@ -16,10 +18,10 @@ class W_ClassObject(W_ModuleObject):
         self.is_singleton = is_singleton
 
         if self.superclass is not None:
-            self.superclass.inherited(space, self)
             # During bootstrap, we cannot create singleton classes, yet
             if not self.is_singleton and not space.bootstrap:
                 self.getsingletonclass(space)
+            self.superclass.inherited(space, self)
 
     def __deepcopy__(self, memo):
         obj = super(W_ClassObject, self).__deepcopy__(memo)
@@ -95,3 +97,11 @@ class W_ClassObject(W_ModuleObject):
     @classdef.method("superclass")
     def method_superclass(self, space):
         return self.superclass if self.superclass is not None else space.w_nil
+
+    @classdef.method("instance_methods")
+    def method_instance_methods(self, space):
+        methods = []
+        for m in self.methods_w:
+            methods.append( space.newsymbol(m) )
+        return space.newarray(methods)
+

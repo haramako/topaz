@@ -78,6 +78,7 @@ class ParseError(Exception):
 
 class Source(object):
     def __init__(self, s):
+        # print '**REGEXP**', s
         self.pos = 0
         self.s = s
 
@@ -322,6 +323,8 @@ class AnyAll(RegexpBase):
 
     def fix_groups(self):
         pass
+    def is_empty(self):
+        return False
 
     def optimize(self, info, in_set=False):
         return self
@@ -339,12 +342,18 @@ class ZeroWidthBase(RegexpBase):
 
 
 class StartOfString(ZeroWidthBase):
+    def can_be_affix(self):
+        return False
+    
     def compile(self, ctx):
         ctx.emit(OPCODE_AT)
         ctx.emit(AT_BEGINNING_STRING)
 
 
 class EndOfString(ZeroWidthBase):
+    def can_be_affix(self):
+        return False
+    
     def compile(self, ctx):
         ctx.emit(OPCODE_AT)
         ctx.emit(AT_END_STRING)
@@ -435,6 +444,12 @@ class Branch(RegexpBase):
     def __init__(self, branches):
         RegexpBase.__init__(self)
         self.branches = branches
+        
+    def can_be_affix(self):
+        return False
+    
+    def is_empty(self):
+        return False
 
     def fix_groups(self):
         for b in self.branches:
@@ -638,7 +653,7 @@ class GreedyRepeat(BaseRepeat):
 
     def can_be_affix(self):
         return True
-
+    
     def optimize(self, info, in_set=False):
         subpattern = self.subpattern.optimize(info)
         return GreedyRepeat(subpattern, self.min_count, self.max_count)
@@ -657,6 +672,9 @@ class LookAround(RegexpBase):
         RegexpBase.__init__(self, positive=positive)
         self.subpattern = subpattern
         self.behind = behind
+
+    def can_be_affix(self):
+        return False
 
     def fix_groups(self):
         self.subpattern.fix_groups()
@@ -1067,6 +1085,7 @@ def _parse_set_item(source, info):
     here = source.pos
     if source.match("[:"):
         try:
+            return Character(65)
             return _parse_posix_class(source, info)
         except ParseError:
             source.pos = here

@@ -1,8 +1,8 @@
 module Enumerable
   def map
     result = []
-    self.each do |x|
-      result << (yield x)
+    self.each do |*x|
+      result << (yield *x)
     end
     result
   end

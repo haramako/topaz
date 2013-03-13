@@ -73,6 +73,9 @@ class Interpreter(object):
             pc = self.handle_raise_break(space, pc, frame, bytecode, e)
         except Throw as e:
             pc = self.handle_throw(space, pc, frame, bytecode, e)
+        #except (AssertionError, AttributeError) as e:
+        #    print frame.get_filename(), frame.get_lineno(None)
+        #    raise
         return pc
 
     def handle_bytecode(self, space, pc, frame, bytecode):

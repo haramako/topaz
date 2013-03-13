@@ -4,12 +4,13 @@ from rpython.rlib.unroll import unrolling_iterable
 
 
 FORMAT_CHARS = unrolling_iterable([
-    "s", "d", "f"
+    "s", "d", "f", "X", "x"
 ])
 
 
 class StringFormatter(object):
     def __init__(self, fmt, items_w):
+        # print "**FORMAT**", fmt
         self.fmt = fmt
         self.items_w = items_w
         self.item_index = 0
@@ -43,7 +44,11 @@ class StringFormatter(object):
                     result_w.append(w_res)
                     break
             else:
-                raise NotImplementedError(format_char)
+                if format_char == "%":
+                    result_w.append(space.newstr_fromstr("%"))
+                    self.item_index -= 1
+                else:
+                    raise NotImplementedError(format_char)
         return result_w
 
     def _fmt_num(self, space, num, width):
@@ -59,3 +64,12 @@ class StringFormatter(object):
     def fmt_f(self, space, w_item, width):
         num = space.float_w(w_item)
         return self._fmt_num(space, formatd(num, "f", 6), width)
+
+    def fmt_X(self, space, w_item, width):
+        num = space.int_w(w_item)
+        return self._fmt_num(space, str(num), width)
+
+    def fmt_x(self, space, w_item, width):
+        num = space.int_w(w_item)
+        return self._fmt_num(space, str(num), width)
+    

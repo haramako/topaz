@@ -355,3 +355,14 @@ class Kernel(Module):
                 if e.name == name:
                     return e.w_value
                 raise
+            
+    @moduledef.method("autoload", mod="symbol", filename="path")
+    def method_autoload(self, space, mod, filename):
+        # print 'autoload', mod, filename
+        return None
+
+    # for Uri#to_s 
+    @moduledef.method("to_s")
+    def method_to_s(self, space):
+        return space.newstr_fromstr(space.any_to_s(self))
+    
