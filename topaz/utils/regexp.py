@@ -78,7 +78,6 @@ class ParseError(Exception):
 
 class Source(object):
     def __init__(self, s):
-        # print '**REGEXP**', s
         self.pos = 0
         self.s = s
 
@@ -343,7 +342,7 @@ class ZeroWidthBase(RegexpBase):
 
 class StartOfString(ZeroWidthBase):
     def can_be_affix(self):
-        return False
+        return True
     
     def compile(self, ctx):
         ctx.emit(OPCODE_AT)
@@ -352,7 +351,7 @@ class StartOfString(ZeroWidthBase):
 
 class EndOfString(ZeroWidthBase):
     def can_be_affix(self):
-        return False
+        return True
     
     def compile(self, ctx):
         ctx.emit(OPCODE_AT)
@@ -446,7 +445,7 @@ class Branch(RegexpBase):
         self.branches = branches
         
     def can_be_affix(self):
-        return False
+        return True
     
     def is_empty(self):
         return False
@@ -674,7 +673,7 @@ class LookAround(RegexpBase):
         self.behind = behind
 
     def can_be_affix(self):
-        return False
+        return True
 
     def fix_groups(self):
         self.subpattern.fix_groups()
@@ -819,9 +818,14 @@ class SetIntersection(SetBase):
         ] + [self.items[-1]]).compile(ctx)
 
 
-POSITION_ESCAPES = {}
+POSITION_ESCAPES = {
+    "A": StartOfString(),
+    "z": EndOfString(),
+}
 CHARSET_ESCAPES = {
     "d": Property(CATEGORY_DIGIT),
+    "s": Property(CATEGORY_SPACE),
+    "S": Property(CATEGORY_NOT_SPACE),
 }
 PROPERTIES = {
     "digit": CATEGORY_DIGIT,
@@ -1280,6 +1284,7 @@ def _compile_no_cache(pattern, flags):
 
 
 def compile(cache, pattern, flags=0):
+    # print "**REGEXP**", pattern
     if not cache.contains(pattern, flags):
         cache.set(pattern, flags, _compile_no_cache(pattern, flags))
     return cache.get(pattern, flags)

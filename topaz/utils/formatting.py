@@ -47,6 +47,8 @@ class StringFormatter(object):
                 if format_char == "%":
                     result_w.append(space.newstr_fromstr("%"))
                     self.item_index -= 1
+                elif format_char == "*":
+                    pass
                 else:
                     raise NotImplementedError(format_char)
         return result_w

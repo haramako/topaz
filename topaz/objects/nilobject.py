@@ -16,6 +16,7 @@ class W_NilObject(W_Object):
         return space.w_true
 
     @classdef.method("to_s")
+    @classdef.method("to_str")
     def method_to_s(self, space):
         return space.newstr_fromstr("")
 

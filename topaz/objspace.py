@@ -60,7 +60,7 @@ from topaz.objects.procobject import W_ProcObject
 from topaz.objects.randomobject import W_RandomObject
 from topaz.objects.rangeobject import W_RangeObject
 from topaz.objects.regexpobject import W_RegexpObject
-from topaz.objects.socketobject import W_SocketObject, W_BasicSocketObject
+from topaz.objects.socketobject import W_SocketObject, W_BasicSocketObject, W_TCPServerObject
 from topaz.objects.stringobject import W_StringObject
 from topaz.objects.symbolobject import W_SymbolObject
 from topaz.objects.threadobject import W_ThreadObject
@@ -168,6 +168,7 @@ class ObjectSpace(object):
             self.getclassfor(W_ThreadObject),
             self.getclassfor(W_TimeObject),
             self.getclassfor(W_BasicSocketObject),
+            self.getclassfor(W_TCPServerObject),
 
             self.getclassfor(W_ExceptionObject),
             self.getclassfor(W_ThreadError),

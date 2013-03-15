@@ -1,0 +1,29 @@
+Module#autoload
+Regexp /:(?=\d|in )/ でエラー
+require 'date'
+String.scan
+Kernel#to_s
+Hash#each_value
+Regexp::EXTENDED
+format X %
+Fixnum#>>
+Encoding::UTF_7 ...
+/.../n
+Regexp#quote
+Module#dup
+Etc
+Class#instance_methods, methods
+defined?(::Encoding) ::があるとエラー defined? まわりがおかしいっぽい
+Regexp.union
+Hash[1,2,3,4]
+Object#respond_to?(string)
+Kernel.rand, Random.rand
+Proc.arity
+String#force_encoding
+String#each_byte, each_char
+Kernel.sprintf
+String#gsub!
+Class#inherited の挙動
+Kernel.caller
+super がおかしい？？
+rescue の $!
