@@ -3,9 +3,7 @@ import copy
 from topaz.module import ClassDef
 from topaz.objects.moduleobject import W_ModuleObject
 from topaz.objects.objectobject import W_Object
-from pprint import PrettyPrinter
 
-pp = PrettyPrinter(indent=2)
 
 class W_ClassObject(W_ModuleObject):
     _immutable_fields_ = ["superclass"]

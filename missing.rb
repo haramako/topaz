@@ -63,7 +63,7 @@ class String
     self
   end
   def each_line
-    self.split(/\n/).each do |line|
+    self.split(/\x0d?\n/).each do |line|
       yield line
     end
   end
@@ -87,6 +87,12 @@ class String
     r = []
     self.gsub!(regexp){ |mo| r << mo[0] }
     r
+  end
+  def strip
+    self.gsub(/\A\s+/){''}.gsub(/\a+\Z/){''}
+  end
+  def strip!
+    self.replace self.strip
   end
   alias replace initialize_copy 
 end
@@ -177,6 +183,9 @@ class Array
   def collect!(&block)
     self.replace collect(&block)
     self
+  end
+  def sort_by( &block )
+    self.map{|x| [x, block.call(*x)] }.sort{|x| x[1] }.map{|x| x[0] }
   end
 end
 

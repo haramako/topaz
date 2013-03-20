@@ -211,7 +211,6 @@ module WEBrick
       end
       return if @request_method == "CONNECT"
       return if @unparsed_uri == "*"
-      puts header: @header
 
       begin
         setup_forwarded_info
@@ -435,7 +434,7 @@ module WEBrick
     def read_header(socket)
       if socket
         while line = read_line(socket)
-          break if /\A(#{LF}|#{CRLF})\z/om =~ line
+          break if /\A\x0d?\x0a\z/om =~ line
           @raw_header << line
         end
       end

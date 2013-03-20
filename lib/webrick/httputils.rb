@@ -159,6 +159,7 @@ module WEBrick
       }
       header.each{|key, values|
         values.each{|value|
+          value.strip
           value.strip!
           value.gsub!(/\s+/, " ")
         }
@@ -208,7 +209,7 @@ module WEBrick
             tmp.push([val, q])
           end
         }
-        tmp = tmp.sort_by{|val, q| -q}
+        tmp = tmp.sort{|a,b| a[1] <=> b[1]}
         tmp.collect!{|val, q| val}
       end
       return tmp

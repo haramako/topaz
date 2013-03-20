@@ -79,6 +79,7 @@ module WEBrick
           raise HTTPStatus::EOFError if timeout <= 0
           raise HTTPStatus::EOFError if sock.eof?
           req.parse(sock)
+          puts req.raw_header.join("")
           res.request_method = req.request_method
           res.request_uri = req.request_uri
           res.request_http_version = req.http_version
@@ -179,7 +180,6 @@ module WEBrick
 
     def search_servlet(path)
       script_name, path_info = @mount_tab.scan(path)
-      p [script_name, path_info]
       servlet, options = @mount_tab[script_name]
       if servlet
         [ servlet, options, script_name, path_info ]
@@ -241,7 +241,6 @@ module WEBrick
       end
 
       def []=(dir, val)
-        p [dir,val]
         dir = normalize(dir)
         @tab[dir] = val
         compile
@@ -257,7 +256,6 @@ module WEBrick
 
       def scan(path)
         @scanner =~ path
-        p [@scanner, path, $&, $']
         [ $&[0..-2], "/"+ $' ]
       end
 
@@ -268,7 +266,6 @@ module WEBrick
         k.sort!
         k.reverse!
         k.collect!{|path| Regexp.escape(path) }
-        p @tab.keys
         @scanner = Regexp.new("^(" + k.join("|") +")(/)")
       end
 

@@ -299,4 +299,3 @@ class W_FixnumObject(W_RootObject):
             raise space.error(space.w_RangeError, "%d out of char range" % self.intvalue)
         else:
             return space.newstr_fromstr(chr(self.intvalue))
-

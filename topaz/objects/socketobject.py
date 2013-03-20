@@ -16,10 +16,17 @@ class W_SocketObject(Module):
 class W_SocketOption(W_Object):
     classdef = ClassDef("Option", W_Object.classdef, filepath=__file__)
 
-    
+
+fd_sock = {}
+
+def _for_fd(fd):
+    if fd in fd_sock:
+        return fd_sock[fd]
+    else:
+        return None
+
 class W_BasicSocketObject(W_IOObject):
     classdef = ClassDef("BasicSocket", W_IOObject.classdef, filepath=__file__)
-    fd_sock = {}
 
     def __init__(self, space):
         W_IOObject.__init__(self, space)
@@ -31,19 +38,14 @@ class W_BasicSocketObject(W_IOObject):
 
     @classdef.singleton_method("do_not_reverse_lookup")
     def singleton_method_do_not_reverse_lookup(self, space):
-        return space.newbool(W_BasicSocketObject._global_do_not_reverse_lookup)
+        #return space.newbool(W_BasicSocketObject._global_do_not_reverse_lookup)
+        return space.newbool(False)
 
     @classdef.singleton_method("do_not_reverse_lookup=", val="bool")
     def singleton_method_do_not_reverse_lookup_set(self, space, val):
-        W_BasicSocketObject._global_do_not_reverse_lookup = val
+        # W_BasicSocketObject._global_do_not_reverse_lookup = val
         return space.newbool(val)
 
-    @classmethod
-    def for_fd(self, space, fd):
-        if fd in self.fd_sock:
-            return self.fd_sock[fd]
-        else:
-            return None
         
     @classdef.singleton_method("for_fd")
     def method_for_fd(self, space):
@@ -129,7 +131,7 @@ class W_TCPServerObject(W_BasicSocketObject):
         self.sock.bind(addr)
         self.sock.listen(5)
         self.fd = self.sock.fd
-        W_BasicSocketObject.fd_sock[self.fd] = self
+        fd_sock[self.fd] = self
         return self
 
     @classdef.method("listen", backlog="int")
@@ -147,15 +149,15 @@ class W_TCPServerObject(W_BasicSocketObject):
     @classdef.singleton_method("select", timeout="float")
     def method_select(self, space, w_inl, w_outl, w_excl, timeout):
         if w_inl is not space.w_nil:
-            inl = [io.fd for io in w_inl.listview(space)]
+            inl = [io.getfd() for io in w_inl.listview(space)]
         else:
             inl = []
         if w_outl is not space.w_nil:
-            outl = [io.fd for io in w_outl.listview(space)]
+            outl = [io.getfd() for io in w_outl.listview(space)]
         else:
             outl = []
         if w_excl is not space.w_nil:
-            excl = [io.fd for io in w_excl.listview(space)]
+            excl = [io.getfd() for io in w_excl.listview(space)]
         else:
             excl = []
         # print inl, outl, excl, timeout
@@ -165,7 +167,7 @@ class W_TCPServerObject(W_BasicSocketObject):
             print e.get_msg()
             return space.w_nil
         # print inl, outl, excl
-        w_inl = space.newarray([W_BasicSocketObject.for_fd(space, fd) for fd in inl])
-        w_outl = space.newarray([W_BasicSocketObject.for_fd(space, fd) for fd in outl])
-        w_excl = space.newarray([W_BasicSocketObject.for_fd(space, fd) for fd in excl])
+        w_inl = space.newarray([_for_fd(fd) for fd in inl])
+        w_outl = space.newarray([_for_fd(fd) for fd in outl])
+        w_excl = space.newarray([_for_fd(fd) for fd in excl])
         return space.newarray([w_inl, w_outl, w_excl])

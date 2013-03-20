@@ -1,2 +1,5 @@
 *.py[co]
 _build/
+GPATH
+GTAGS
+GRTAGS
